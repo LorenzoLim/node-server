@@ -1,28 +1,38 @@
 const http = require('http');
 const port = 3000;
 
-// let todos2 = new Object();
-// todos['Task1'] = 'Dishes';
-// todos['Task2'] = 'Laundry';
-// todos['Task3'] = 'Pay Bills';
+let todos = [
+	{task: 'Laundry', status: false},
+	{task: 'Dishes', status: true}
+]
 
-let todos = ['Dishes', 'Laundry', 'Pay Bills']
-
-function handleMyRequest (request, response){
-  if (request.url === '/todos') {
-    response.writeHead(200, {
-      'Content-Type': 'application/json'
+function handleMyRequest(request, response) {
+	if (request.url === '/api/todos' && request.method === 'GET') {
+		response.writeHead(200, {
+			'Content-Type': 'application/json'
+		})
+		response.end(JSON.stringify(todos));
+	} else if (request.url === '/api/teapot') {
+		response.writeHead('418')
+		response.end('I`m A Teapot')
+	} else if (request.url === '/api/todos' && request.method === 'POST') {
+	  let body = ''
+		request.on('data', (chunk) => {
+	    console.log(`BODY: ${chunk}`);
+	    body += chunk
+	  });
+    request.on('end', () => {
+      todos.push(JSON.parse(body));
     });
-    response.end(JSON.stringify(todos));
-  } else if (request.url == '/bye') {
-    response.end('Bye');
-  } else {
-    response.writeHead(404)
-    response.end();
-  }
+		response.writeHead('200')
+		response.end();
+	} else {
+		response.writeHead('404')
+		response.end();
+	}
 }
 
-const server = http.createServer(handleMyRequest)
+const server = http.createServer(handleMyRequest);
 
-console.log(`Server is running on port ${port}`)
+console.log(`Server is running on port ${port}`);
 server.listen(port);
