@@ -34,8 +34,9 @@ app.put('/todos/:id', (req,res) =>{
 
 app.delete('/todos/:id', (req, res) => {
   console.log('DELETE todo')
-  res.send(todo)
-})
+  todos.splice(req.params.id, 1)
+  res.send(todos)
+});
 
 
 app.post('/todos', (req,res) => {
@@ -45,7 +46,7 @@ app.post('/todos', (req,res) => {
 });
 
 app.use(function (req, res, next) {
-  res.status(404).send("Sorry can't find that!")
+  res.status(404).send("Sorry I can't find that!")
 })
 
 app.listen(port);
